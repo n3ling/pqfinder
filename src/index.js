@@ -244,11 +244,19 @@ client.on('interactionCreate', async (interaction) => {
       db.removeMember(messageId, targetUserId);
       const updated = db.getMembers(messageId);
 
+      let targetName = `<@${targetUserId}>`;
+      try {
+        const user = await client.users.fetch(targetUserId);
+        targetName = user.displayName;
+      } catch {
+        // fallback to mention
+      }
+
       if (updated.length === 0) {
         db.deleteParty(messageId);
         await interaction.update({
           components: [],
-          content: `Removed <@${targetUserId}>. Party closed — no members remaining.`,
+          content: `Removed **${targetName}**. Party closed — no members remaining.`,
         });
         try {
           const embedMsg = await interaction.channel.messages.fetch(messageId);
@@ -262,7 +270,7 @@ client.on('interactionCreate', async (interaction) => {
       await updateEmbed(messageId);
       await interaction.update({
         components: [],
-        content: `Removed <@${targetUserId}> from the party.`,
+        content: `Removed **${targetName}** from the party.`,
       });
       return;
     }
@@ -427,19 +435,27 @@ client.on('interactionCreate', async (interaction) => {
           return;
         }
 
+        const options = await Promise.all(
+          removable.map(async (m) => {
+            try {
+              const user = await client.users.fetch(m.user_id);
+              return new StringSelectMenuOptionBuilder()
+                .setLabel(user.displayName)
+                .setValue(m.user_id);
+            } catch {
+              return new StringSelectMenuOptionBuilder()
+                .setLabel(`Unknown (${m.user_id})`)
+                .setValue(m.user_id);
+            }
+          }),
+        );
+
         const select = new StringSelectMenuBuilder()
           .setCustomId(`remove_select_${messageId}`)
           .setPlaceholder('Select a member to remove')
           .setMinValues(1)
           .setMaxValues(1)
-          .addOptions(
-            removable.map((m) =>
-              new StringSelectMenuOptionBuilder()
-                .setLabel(`Remove member`)
-                .setValue(m.user_id)
-                .setDescription(`<@${m.user_id}>`),
-            ),
-          );
+          .addOptions(options);
 
         await interaction.update({
           content: 'Choose a member to remove:',
