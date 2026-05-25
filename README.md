@@ -36,10 +36,8 @@ DISCORD_TOKEN=your_bot_token_here
 
 ### 4. Invite the bot to your server
 
-Replace `CLIENT_ID` with your application's ID (found under **OAuth2 > General** in the Developer Portal):
-
 ```
-https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=83968&scope=bot%20applications.commands
+https://discord.com/api/oauth2/authorize?client_id=1508562288766877746&permissions=83968&scope=bot%20applications.commands
 ```
 
 Required permissions:
