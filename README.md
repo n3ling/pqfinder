@@ -36,10 +36,8 @@ DISCORD_TOKEN=your_bot_token_here
 
 ### 4. Invite the bot to your server
 
-Replace `CLIENT_ID` with your application's ID (found under **OAuth2 > General** in the Developer Portal):
-
 ```
-https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&permissions=83968&scope=bot%20applications.commands
+https://discord.com/api/oauth2/authorize?client_id=1508562288766877746&permissions=83968&scope=bot%20applications.commands
 ```
 
 Required permissions:
@@ -89,11 +87,6 @@ The `/lfg` command is registered globally and may take a few minutes to appear i
 
 Parties older than **24 hours** are automatically removed. Runs on startup and every hour thereafter. If a party embed is deleted manually, the database entry is cleaned up on the fly.
 
-To purge every party immediately (operator only): `npm run purge`
-
-## Data
-
-Single SQLite database shared across all servers — stored at `data/parties.db` (gitignored, created on first run).
 
 ## Project structure
 
